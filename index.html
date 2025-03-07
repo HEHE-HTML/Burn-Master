@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Roast Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="roasts.js" defer></script>
+    <style>
+        :root {
+            --primary: #ff3e3e;
+            --secondary: #340068;
+            --background: #0a0a0a;
+            --text: #ffffff;
+            --accent: #ff7b00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html, body {
+            overflow: hidden; /* Remove scrollbars */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        body::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .logo h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 62, 62, 0.3);
+            letter-spacing: -1px;
+        }
+
+        .logo p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 10px;
+            font-size: 1.2rem;
+        }
+
+        .fire-emoji {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 62, 62, 0.1) 0%, rgba(10, 10, 10, 0) 70%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .card.active::before {
+            opacity: 1;
+        }
+
+        .roast-output {
+            min-height: 150px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 62, 62, 0.3);
+        }
+
+        .option-card.active {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            transform: scale(1.05);
+        }
+
+        .option-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .control-panel {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 62, 62, 0.3);
+            position: relative;
+            overflow: hidden;
+            outline: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(255, 62, 62, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 10px rgba(255, 62, 62, 0.4);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1);
+            transition: all 0.5s ease;
+        }
+
+        .btn:active::after {
+            transform: scale(50);
+            opacity: 0;
+            transition: 0s;
+        }
+
+        .intensity-slider {
+            width: 100%;
+            margin: 30px 0;
+        }
+
+        .slider-container {
+            position: relative;
+        }
+
+        .slider-container label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            position: relative;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 62, 62, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(255, 62, 62, 0.9);
+        }
+
+        .intensity-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .copy-icon {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .logo h1 {
+                font-size: 2.5rem;
+            }
+            
+            .card {
+                padding: 25px;
+            }
+            
+            .roast-output {
+                font-size: 1.4rem;
+                min-height: 120px;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Animation classes */
+        .burn-in {
+            animation: burnIn 0.5s forwards;
+        }
+
+        @keyframes burnIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+                filter: blur(10px);
+            }
+            50% {
+                filter: blur(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 0.5s;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .fire-particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 500;
+        }
+
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 5;
+        }
+
+        .loading.active {
+            opacity: 1;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Easter egg animations */
+        .roast-explosion {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            display: none;
+        }
+
+        .roast-explosion.active {
+            display: block;
+        }
+
+        /* Improved emoji rain */
+        .emoji-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .emoji {
+            position: absolute;
+            font-size: 30px; /* Larger emoji size */
+            will-change: transform;
+            user-select: none;
+            z-index: 9999;
+        }
+
+        /* Full screen particle effect overlay */
+        .particle-storm {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            background: radial-gradient(circle at center, rgba(255, 62, 62, 0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .particle-storm.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1 class="animate__animated animate__fadeInDown">BURN MASTER</h1>
+            <p class="animate__animated animate__fadeIn animate__delay-1s">The Ultimate Roast Generator</p>
+        </div>
+        
+        <div class="card animate__animated animate__fadeIn animate__delay-1s">
+            <div class="roast-output" id="roastOutput">Click Generate to create a devastating roast</div>
+            <button class="copy-btn" id="copyBtn" title="Copy to clipboard">
+                <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" fill="currentColor"/>
+                </svg>
+            </button>
+            <div class="loading" id="loadingIndicator">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+
+        <div class="slider-container animate__animated animate__fadeIn animate__delay-1s">
+            <label for="intensitySlider">Roast Intensity</label>
+            <input type="range" min="1" max="3" value="2" class="slider" id="intensitySlider">
+            <div class="intensity-labels">
+                <span>Mild</span>
+                <span>Medium</span>
+                <span>Savage</span>
+            </div>
+        </div>
+
+        <div class="options animate__animated animate__fadeIn animate__delay-1s">
+            <div class="option-card active" data-category="general">
+                <div class="option-icon">🔥</div>
+                <p>General</p>
+            </div>
+            <div class="option-card" data-category="appearance">
+                <div class="option-icon">👀</div>
+                <p>Appearance</p>
+            </div>
+            <div class="option-card" data-category="personality">
+                <div class="option-icon">🧠</div>
+                <p>Personality</p>
+            </div>
+            <div class="option-card" data-category="skills">
+                <div class="option-icon">🎯</div>
+                <p>Skills</p>
+            </div>
+        </div>
+
+        <div class="control-panel animate__animated animate__fadeIn animate__delay-1s">
+            <button class="btn" id="generateBtn">Generate Roast</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Copied to clipboard!</div>
+    <div class="emoji-rain" id="emojiRain"></div>
+    <div class="particle-storm" id="particleStorm"></div>
+
+    <script>
+        // The roasts.js file will be loaded automatically
+        document.addEventListener('DOMContentLoaded', () => {
+            const roastOutput = document.getElementById('roastOutput');
+            const generateBtn = document.getElementById('generateBtn');
+            const intensitySlider = document.getElementById('intensitySlider');
+            const optionCards = document.querySelectorAll('.option-card');
+            const card = document.querySelector('.card');
+            const copyBtn = document.getElementById('copyBtn');
+            const toast = document.getElementById('toast');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const emojiRain = document.getElementById('emojiRain');
+            const particleStorm = document.getElementById('particleStorm');
+            
+            let selectedCategory = 'general';
+            let consecutiveClicks = 0;
+            let lastClickTime = 0;
+            
+            // Initialize GSAP
+            gsap.config({ nullTargetWarn: false });
+            
+            // Fire particle effect
+            const createFireParticle = (x, y) => {
+                const particle = document.createElement('div');
+                particle.classList.add('fire-particle');
+                document.body.appendChild(particle);
+                
+                gsap.set(particle, {
+                    x: x,
+                    y: y,
+                    scale: Math.random() * 0.8 + 0.2
+                });
+                
+                gsap.to(particle, {
+                    y: y - 100 - Math.random() * 100,
+                    x: x - (Math.random() * 100 - 50),
+                    opacity: 0,
+                    scale: 0,
+                    duration: 1 + Math.random(),
+                    ease: "power2.out",
+                    onComplete: () => {
+                        particle.remove();
+                    }
+                });
+            };
+            
+            // Improved emoji rain effect
+            const startEmojiRain = () => {
+                const emojis = ['🔥', '💥', '⚡', '😱', '💀', '🤣', '😂', '🙊', '💯', '🔪', '👹', '👺'];
+                emojiRain.innerHTML = '';
+                
+                // Create more emojis for a fuller effect
+                for (let i = 0; i < 100; i++) {
+                    const emoji = document.createElement('div');
+                    emoji.classList.add('emoji');
+                    emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    emojiRain.appendChild(emoji);
+                    
+                    const startX = Math.random() * window.innerWidth;
+                    const size = Math.random() * 20 + 20; // Varied sizes
+                    const rotation = Math.random() * 360;
+                    const delay = Math.random() * 3;
+                    const duration = 2 + Math.random() * 4;
+                    
+                    // Set initial properties
+                    gsap.set(emoji, {
+                        x: startX,
+                        y: -50,
+                        opacity: 0,
+                        rotation: rotation,
+                        fontSize: size + 'px'
+                    });
+                    
+                    // Animate emoji
+                    gsap.timeline()
+                        .to(emoji, {
+                            y: window.innerHeight + 100,
+                            x: startX + (Math.random() * 200 - 100),
+                            opacity: 1,
+                            rotation: rotation + Math.random() * 360,
+                            duration: duration,
+                            delay: delay,
+                            ease: "power1.in",
+                        })
+                        .to(emoji, {
+                            opacity: 0,
+                            duration: 0.5,
+                            onComplete: () => {
+                                emoji.remove();
+                            }
+                        }, '-=0.5');
+                }
+            };
+            
+            // Full screen particle storm effect
+// Full screen particle storm effect
+const startParticleStorm = () => {
+
+};
+            
+            // Select option cards
+            optionCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    optionCards.forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                    selectedCategory = card.dataset.category;
+                    
+                    // Add animation
+                    card.classList.add('pulse');
+                    setTimeout(() => {
+                        card.classList.remove('pulse');
+                    }, 500);
+                    
+                    // Fire particles
+                    const rect = card.getBoundingClientRect();
+                    for (let i = 0; i < 10; i++) {
+                    }
+                });
+            });
+            
+            // Generate roast
+            generateBtn.addEventListener('click', () => {
+                const currentTime = new Date().getTime();
+                
+                // Check for rapid consecutive clicks (Easter egg)
+                if (currentTime - lastClickTime < 400) {
+                    consecutiveClicks++;
+                    if (consecutiveClicks >= 5) {
+                        startEmojiRain();
+                        startParticleStorm(); // Add the particle storm effect
+                        consecutiveClicks = 0;
+                    }
+                } else {
+                    consecutiveClicks = 1;
+                }
+                lastClickTime = currentTime;
+                
+                // Generate roast
+                loadingIndicator.classList.add('active');
+                card.classList.add('active');
+                
+                setTimeout(() => {
+                    const intensity = parseInt(intensitySlider.value);
+                    let roast = '';
+                    
+                    if (typeof window.getRoast === 'function') {
+                        roast = window.getRoast(selectedCategory, intensity);
+                    } else {
+                        roast = "Error: roasts.js not loaded properly";
+                    }
+                    
+                    // Apply animation to the roast text
+                    roastOutput.innerHTML = '';
+                    roastOutput.classList.remove('burn-in');
+                    void roastOutput.offsetWidth; // Force reflow
+                    
+                    setTimeout(() => {
+                        roastOutput.textContent = roast;
+                        roastOutput.classList.add('burn-in');
+                        loadingIndicator.classList.remove('active');
+                        
+                        // Button effect
+                        generateBtn.classList.add('pulse');
+                        setTimeout(() => {
+                            generateBtn.classList.remove('pulse');
+                        }, 500);
+                        
+                        // Fire particles around the card
+                        const rect = card.getBoundingClientRect();
+                        for (let i = 0; i < 20; i++) {
+                            const side = Math.floor(Math.random() * 4);
+                            let x, y;
+                            
+                            switch (side) {
+                                case 0: // top
+                                    x = rect.left + Math.random() * rect.width;
+                                    y = rect.top;
+                                    break;
+                                case 1: // right
+                                    x = rect.right;
+                                    y = rect.top + Math.random() * rect.height;
+                                    break;
+                                case 2: // bottom
+                                    x = rect.left + Math.random() * rect.width;
+                                    y = rect.bottom;
+                                    break;
+                                case 3: // left
+                                    x = rect.left;
+                                    y = rect.top + Math.random() * rect.height;
+                                    break;
+                            }
+                        }
+                    }, 300);
+                }, 800);
+            });
+            
+            // Intensity slider effects
+            intensitySlider.addEventListener('input', () => {
+                const value = parseInt(intensitySlider.value);
+                const gradient = [
+                    'rgba(255, 165, 0, 0.7)', // Orange
+                    'rgba(255, 99, 71, 0.8)', // Tomato
+                    'rgba(255, 0, 0, 0.9)'    // Red
+                ];
+                
+                // Update the thumb color based on intensity
+                intensitySlider.style.setProperty('--thumb-color', gradient[value - 1]);
+                
+                // Create particles based on slider movement
+                const rect = intensitySlider.getBoundingClientRect();
+                const thumbPosition = (value - 1) / 2 * rect.width + rect.left;
+                createFireParticle(thumbPosition, rect.top);
+            });
+            
+            // Copy functionality
+            copyBtn.addEventListener('click', () => {
+                const text = roastOutput.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 2000);
+                });
+                
+                // Animation
+                copyBtn.classList.add('pulse');
+                setTimeout(() => {
+                    copyBtn.classList.remove('pulse');
+                }, 500);
+            });
+            
+            // Create fire emojis animation on page load
+            setTimeout(() => {
+                const logoRect = document.querySelector('.logo').getBoundingClientRect();
+                const createFireEmoji = () => {
+                    const emoji = document.createElement('div');
+                    emoji.classList.add('fire-emoji');
+                    emoji.textContent = '';
+                    document.body.appendChild(emoji);
+                    
+                    const startX = -900 + Math.random() * logoRect.width * 2;
+                    const startY = logoRect.bottom;
+                    
+                    gsap.set(emoji, {
+                        x: startX,
+                        y: startY,
+                        opacity: 0
+                    });
+                    
+                    gsap.to(emoji, {
+                        y: startY - 100 - Math.random() * 100,
+                        x: startX + (Math.random() * 60 - 30),
+                        opacity: 0.8,
+                        duration: 1.5,
+                        ease: "power2.out",
+                        onComplete: () => {
+                            gsap.to(emoji, {
+                                opacity: 0,
+                                duration: 0.5,
+                                onComplete: () => {
+                                    emoji.remove();
+                                }
+                            });
+                        }
+                    });
+                };
+                
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(createFireEmoji, i * 200);
+                }
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
