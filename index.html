@@ -418,21 +418,21 @@
 
         /* Mobile phone styles */
         @media (max-width: 767px) {
+            /* Hide title and subtitle on mobile */
+            .logo {
+                display: none;
+                margin-bottom: 15px;
+            }
+            
             .container {
                 padding: 0 15px;
-            }
-            
-            .logo h1 {
-                font-size: 2.2rem;
-            }
-            
-            .logo p {
-                font-size: 1rem;
+                margin-top: 20px;
             }
             
             .card {
                 padding: 20px;
                 margin-bottom: 25px;
+                margin-top: 10px;
             }
             
             .roast-output {
@@ -490,10 +490,6 @@
 
         /* Small mobile phones */
         @media (max-width: 375px) {
-            .logo h1 {
-                font-size: 1.8rem;
-            }
-            
             .roast-output {
                 font-size: 1.1rem;
                 min-height: 100px;
