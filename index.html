@@ -24,13 +24,8 @@
         }
 
         html, body {
-            overflow: hidden; /* Remove scrollbars */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE and Edge */
-        }
-
-        body::-webkit-scrollbar {
-            display: none; /* Chrome, Safari and Opera */
+            overflow-x: hidden; /* Only hide horizontal scrolling */
+            height: 100%;
         }
 
         body {
@@ -71,12 +66,6 @@
             color: rgba(255, 255, 255, 0.7);
             margin-top: 10px;
             font-size: 1.2rem;
-        }
-
-        .fire-emoji {
-            position: absolute;
-            font-size: 2rem;
-            opacity: 0;
         }
 
         .card {
@@ -189,26 +178,6 @@
             box-shadow: 0 3px 10px rgba(255, 62, 62, 0.4);
         }
 
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1);
-            transition: all 0.5s ease;
-        }
-
-        .btn:active::after {
-            transform: scale(50);
-            opacity: 0;
-            transition: 0s;
-        }
-
         .intensity-slider {
             width: 100%;
             margin: 30px 0;
@@ -248,6 +217,22 @@
         }
 
         .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(255, 62, 62, 0.9);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 62, 62, 0.7);
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .slider::-moz-range-thumb:hover {
             transform: scale(1.2);
             box-shadow: 0 0 15px rgba(255, 62, 62, 0.9);
         }
@@ -307,73 +292,39 @@
             opacity: 1;
         }
 
-        /* iPad-specific styles */
-        @media only screen and (min-width: 768px) and (max-width: 1024px) {
-            .container {
-                max-width: 90%;
-            }
-            
-            .btn {
-                padding: 18px 40px;
-                font-size: 1.4rem;
-                width: 60%; /* Wider button for iPad */
-                max-width: 400px;
-            }
-            
-            .card {
-                padding: 30px;
-            }
-            
-            .roast-output {
-                font-size: 2rem;
-                min-height: 180px;
-            }
-            
-            .options {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            
-            .slider::-webkit-slider-thumb {
-                width: 30px;
-                height: 30px;
-            }
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 5;
         }
 
-        /* General mobile styles */
-        @media (max-width: 767px) {
-            .logo h1 {
-                font-size: 2.5rem;
-            }
-            
-            .card {
-                padding: 25px;
-            }
-            
-            .roast-output {
-                font-size: 1.4rem;
-                min-height: 120px;
-            }
-            
-            .control-panel {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 100%;
-                max-width: none;
-                padding: 15px 20px;
-            }
-            
-            .options {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .loading.active {
+            opacity: 1;
         }
 
-        /* Portrait iPad */
-        @media only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
-            .container {
-                padding-bottom: 50px;
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
         }
 
@@ -414,69 +365,154 @@
             }
         }
 
-        .fire-particle {
+        /* Improved responsive styles */
+        /* iPad/tablet styles */
+        @media only screen and (min-width: 768px) and (max-width: 1024px) {
+            .container {
+                max-width: 90%;
+                padding: 0 20px;
+            }
+            
+            .logo h1 {
+                font-size: 3rem;
+            }
+            
+            .btn {
+                padding: 15px 30px;
+                font-size: 1.3rem;
+                width: 80%;
+                max-width: 300px;
+            }
+            
+            .card {
+                padding: 30px;
+                margin-bottom: 30px;
+            }
+            
+            .roast-output {
+                font-size: 1.6rem;
+                min-height: 140px;
+            }
+            
+            .options {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
+            }
+            
+            .option-card {
+                padding: 12px;
+            }
+            
+            .option-icon {
+                font-size: 1.8rem;
+                margin-bottom: 8px;
+            }
 
-        }
-
-        .loading {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 10, 10, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-            z-index: 5;
-        }
-
-        .loading.active {
-            opacity: 1;
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            border-top-color: var(--primary);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
+            /* Ensure full height content on iPad */
+            body {
+                min-height: 100%;
+                height: auto;
+                padding: 30px 20px;
             }
         }
 
-        /* Easter egg animations */
-        .roast-explosion {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-            display: none;
+        /* Mobile phone styles */
+        @media (max-width: 767px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .logo h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo p {
+                font-size: 1rem;
+            }
+            
+            .card {
+                padding: 20px;
+                margin-bottom: 25px;
+            }
+            
+            .roast-output {
+                font-size: 1.3rem;
+                min-height: 120px;
+                padding: 0 5px;
+            }
+            
+            .control-panel {
+                margin-top: 25px;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: none;
+                padding: 12px 20px;
+                font-size: 1.1rem;
+            }
+            
+            .options {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-top: 20px;
+            }
+            
+            .option-card {
+                padding: 10px;
+            }
+            
+            .option-icon {
+                font-size: 1.5rem;
+                margin-bottom: 5px;
+            }
+            
+            .slider-container label {
+                font-size: 1rem;
+            }
+            
+            .intensity-labels {
+                font-size: 0.9rem;
+            }
+            
+            /* Make sure content fits on small screens */
+            body {
+                height: auto;
+                padding: 20px 10px;
+                justify-content: flex-start;
+            }
+            
+            /* Ensure enough space at the bottom */
+            .container {
+                margin-bottom: 30px;
+            }
         }
 
-        .roast-explosion.active {
-            display: block;
-        }
-
-        /* Full screen particle effect overlay */
-        .particle-storm {
-
-        }
-
-        .particle-storm.active {
-            opacity: 1;
+        /* Small mobile phones */
+        @media (max-width: 375px) {
+            .logo h1 {
+                font-size: 1.8rem;
+            }
+            
+            .roast-output {
+                font-size: 1.1rem;
+                min-height: 100px;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
+            
+            .copy-btn {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .copy-icon {
+                width: 15px;
+                height: 15px;
+            }
         }
     </style>
 </head>
@@ -534,7 +570,6 @@
     </div>
 
     <div class="toast" id="toast">Copied to clipboard!</div>
-    <div class="particle-storm" id="particleStorm"></div>
 
     <script>
         // The roasts.js file will be loaded automatically
@@ -547,47 +582,10 @@
             const copyBtn = document.getElementById('copyBtn');
             const toast = document.getElementById('toast');
             const loadingIndicator = document.getElementById('loadingIndicator');
-            const particleStorm = document.getElementById('particleStorm');
             
             let selectedCategory = 'general';
             let consecutiveClicks = 0;
             let lastClickTime = 0;
-            
-            // Initialize GSAP
-            gsap.config({ nullTargetWarn: false });
-            
-            // Fire particle effect
-            const createFireParticle = (x, y) => {
-                const particle = document.createElement('div');
-                particle.classList.add('fire-particle');
-                document.body.appendChild(particle);
-                
-                gsap.set(particle, {
-                    x: x,
-                    y: y,
-                    scale: Math.random() * 0.8 + 0.2
-                });
-                
-                gsap.to(particle, {
-                    y: y - 100 - Math.random() * 100,
-                    x: x - (Math.random() * 100 - 50),
-                    opacity: 0,
-                    scale: 0,
-                    duration: 1 + Math.random(),
-                    ease: "power2.out",
-                    onComplete: () => {
-                        particle.remove();
-                    }
-                });
-            };
-            
-            // Full screen particle storm effect
-            const startParticleStorm = () => {
-                particleStorm.classList.add('active');
-                setTimeout(() => {
-                    particleStorm.classList.remove('active');
-                }, 2000);
-            };
             
             // Select option cards
             optionCards.forEach(card => {
@@ -601,15 +599,6 @@
                     setTimeout(() => {
                         card.classList.remove('pulse');
                     }, 500);
-                    
-                    // Fire particles
-                    const rect = card.getBoundingClientRect();
-                    for (let i = 0; i < 10; i++) {
-                        createFireParticle(
-                            rect.left + Math.random() * rect.width,
-                            rect.top + Math.random() * rect.height
-                        );
-                    }
                 });
             });
             
@@ -617,13 +606,9 @@
             generateBtn.addEventListener('click', () => {
                 const currentTime = new Date().getTime();
                 
-                // Check for rapid consecutive clicks (Easter egg)
+                // Simple click counter for future use if needed
                 if (currentTime - lastClickTime < 400) {
                     consecutiveClicks++;
-                    if (consecutiveClicks >= 5) {
-                        startParticleStorm(); // Simplified effect (removed emoji rain)
-                        consecutiveClicks = 0;
-                    }
                 } else {
                     consecutiveClicks = 1;
                 }
@@ -658,34 +643,6 @@
                         setTimeout(() => {
                             generateBtn.classList.remove('pulse');
                         }, 500);
-                        
-                        // Fire particles around the card
-                        const rect = card.getBoundingClientRect();
-                        for (let i = 0; i < 20; i++) {
-                            const side = Math.floor(Math.random() * 4);
-                            let x, y;
-                            
-                            switch (side) {
-                                case 0: // top
-                                    x = rect.left + Math.random() * rect.width;
-                                    y = rect.top;
-                                    break;
-                                case 1: // right
-                                    x = rect.right;
-                                    y = rect.top + Math.random() * rect.height;
-                                    break;
-                                case 2: // bottom
-                                    x = rect.left + Math.random() * rect.width;
-                                    y = rect.bottom;
-                                    break;
-                                case 3: // left
-                                    x = rect.left;
-                                    y = rect.top + Math.random() * rect.height;
-                                    break;
-                            }
-                            
-                            createFireParticle(x, y);
-                        }
                     }, 300);
                 }, 800);
             });
@@ -701,11 +658,6 @@
                 
                 // Update the thumb color based on intensity
                 intensitySlider.style.setProperty('--thumb-color', gradient[value - 1]);
-                
-                // Create particles based on slider movement
-                const rect = intensitySlider.getBoundingClientRect();
-                const thumbPosition = (value - 1) / 2 * rect.width + rect.left;
-                createFireParticle(thumbPosition, rect.top);
             });
             
             // Copy functionality
@@ -724,47 +676,6 @@
                     copyBtn.classList.remove('pulse');
                 }, 500);
             });
-            
-            // Create fire emojis animation on page load
-            setTimeout(() => {
-                const logoRect = document.querySelector('.logo').getBoundingClientRect();
-                const createFireEmoji = () => {
-                    const emoji = document.createElement('div');
-                    emoji.classList.add('fire-emoji');
-                    emoji.textContent = '';
-                    document.body.appendChild(emoji);
-                    
-                    const startX = logoRect.left + Math.random() * logoRect.width;
-                    const startY = logoRect.bottom;
-                    
-                    gsap.set(emoji, {
-                        x: startX,
-                        y: startY,
-                        opacity: 0
-                    });
-                    
-                    gsap.to(emoji, {
-                        y: startY - 100 - Math.random() * 100,
-                        x: startX + (Math.random() * 60 - 30),
-                        opacity: 0.8,
-                        duration: 1.5,
-                        ease: "power2.out",
-                        onComplete: () => {
-                            gsap.to(emoji, {
-                                opacity: 0,
-                                duration: 0.5,
-                                onComplete: () => {
-                                    emoji.remove();
-                                }
-                            });
-                        }
-                    });
-                };
-                
-                for (let i = 0; i < 10; i++) {
-                    setTimeout(createFireEmoji, i * 200);
-                }
-            }, 1500);
         });
     </script>
 </body>
